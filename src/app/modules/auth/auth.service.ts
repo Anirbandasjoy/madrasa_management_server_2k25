@@ -1,6 +1,6 @@
 import { BadRequestError, NotFoundError, UnauthorizedError } from '@/app/errors/apiError';
 import UserModel from '../user/user.model';
-import { loginSchema, verify2FACodeType } from './auth.schema';
+import { ILogin, verify2FACodeType } from './auth.schema';
 import { comparePassword, hashPassword } from '@/utils/hash';
 import { Types } from 'mongoose';
 import {
@@ -22,12 +22,13 @@ import { IDeviceInfo, SessionModel } from '../session/session.model';
 import { CookieOptions } from 'express';
 import { loadEmailTemplate } from '@/utils/email/loadEmailTemplate';
 import sendingEmail from '@/services/email/emailSender';
+import UserprofileModel from '../userprofile/userprofile.model';
 
-const loginUser = async (loginInfo: loginSchema, deviceInfo?: IDeviceInfo) => {
+const loginUser = async (loginInfo: ILogin, deviceInfo?: IDeviceInfo) => {
   const user = await UserModel.findOne({ email: loginInfo.email });
-
-  if (!user) throw NotFoundError('User not registered');
-  if (!user.isActive) throw UnauthorizedError('User account is inactive');
+  const userProfile = await UserprofileModel.findOne({ userId: user?._id });
+  if (!user || !userProfile) throw NotFoundError('User not registered');
+  if (!userProfile?.isActive) throw UnauthorizedError('User account is inactive');
 
   if (user.twoFactor && user.twoFactor.isEnabled) {
     const code = Math.floor(1000 + Math.random() * 9000).toString();
@@ -133,9 +134,9 @@ const forgotPassword = async (email: string) => {
     subject: 'Password Reset Request',
     html,
   };
-  console.log(emailData);
+
   try {
-    // await sendingEmail(emailData);
+    await sendingEmail(emailData);
   } catch (error) {
     throw error;
   }

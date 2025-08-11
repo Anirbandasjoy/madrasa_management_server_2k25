@@ -3,6 +3,7 @@ import UserModel from '@/app/modules/user/user.model';
 import dbConnection from '@/config/db';
 import { superAdminCreateDetail } from './superAdminCreateDetail';
 import dotenv from 'dotenv';
+import UserprofileModel from '@/app/modules/userprofile/userprofile.model';
 
 dotenv.config();
 
@@ -20,11 +21,19 @@ dotenv.config();
     }
 
     const superAdmin = await UserModel.create({
-      name,
       email,
       password,
       role: 'superadmin',
     });
+
+    const userProfile = await UserprofileModel.create({
+      userId: superAdmin._id,
+      name,
+    });
+
+    if (!superAdmin || !userProfile) {
+      throw new Error('Failed to create super admin');
+    }
 
     console.log('Super admin seeded:', { _id: superAdmin._id, email: superAdmin.email });
     process.exit(0);

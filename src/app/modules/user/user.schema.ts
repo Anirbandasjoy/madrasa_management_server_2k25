@@ -22,7 +22,7 @@ const UserSchema = z.object({
       .optional(),
     role: z
       .enum(Object.values(USER_ROLES) as [string, ...string[]])
-      .default('user')
+      .default(USER_ROLES.USER)
       .optional(),
   }),
 });
@@ -39,8 +39,8 @@ const tokenSchema = z.object({
   }),
 });
 
-export type UserSchema = z.infer<typeof UserSchema>['body'];
-export type TokenInput = z.infer<typeof tokenSchema>['body'];
+export type IUsers = z.infer<typeof UserSchema>['body'];
+export type IToken = z.infer<typeof tokenSchema>['body'];
 
 const UserUpdateSchema = UserSchema.partial().extend({
   body: UserSchema.shape.body.partial(),

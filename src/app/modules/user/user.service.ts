@@ -1,5 +1,5 @@
 import UserModel from './user.model';
-import { UserSchema } from './user.schema';
+import { IUsers } from './user.schema';
 import {
   BadRequestError,
   ConflictError,
@@ -22,6 +22,7 @@ import {
 import { IDeviceInfo } from '../session/session.model';
 import { checkAndCreateSession } from '../session/session.service';
 import sendingEmail from '@/services/email/emailSender';
+import UserprofileModel from '../userprofile/userprofile.model';
 
 const existUserByEmail = async <T>(
   model: any,
@@ -45,7 +46,7 @@ const existUserByEmail = async <T>(
   }
 };
 
-const processUserRegistration = async (userData: UserSchema) => {
+const processUserRegistration = async (userData: IUsers) => {
   await existUserByEmail(UserModel, userData.email as string);
 
   const token = generateToken(
@@ -72,7 +73,6 @@ const processUserRegistration = async (userData: UserSchema) => {
     subject: 'Welcome to Our Service',
     html,
   };
-  console.log(emailData);
   try {
     await sendingEmail(emailData);
   } catch (error) {
@@ -86,7 +86,7 @@ const processUserRegistration = async (userData: UserSchema) => {
 };
 
 const registerUser = async (token: string, deviceInfo?: IDeviceInfo) => {
-  const decode = jwt.verify(token, JWT_PROCESS_REGISTRATION_SECRET_KEY) as UserSchema;
+  const decode = jwt.verify(token, JWT_PROCESS_REGISTRATION_SECRET_KEY) as IUsers;
 
   if (!decode) {
     throw NonAuthoritativeInformation('Non Authoritative Information');
@@ -100,7 +100,12 @@ const registerUser = async (token: string, deviceInfo?: IDeviceInfo) => {
     password: decode.password,
   });
 
-  if (!user) {
+  const userProfile = await UserprofileModel.create({
+    userId: user._id as Types.ObjectId,
+    name: decode.name,
+  });
+
+  if (!user || !userProfile) {
     throw BadRequestError('User registration failed');
   }
 
@@ -121,7 +126,7 @@ const registerUser = async (token: string, deviceInfo?: IDeviceInfo) => {
   };
 
   const accessToken = generateToken(data, JWT_ACCESS_SECRET_KEY as string, JWT_ACCESS_EXPIRES_IN);
-  
+
   if (!accessToken) {
     throw UnauthorizedError('Access token creation failed');
   }
@@ -142,7 +147,7 @@ const registerUser = async (token: string, deviceInfo?: IDeviceInfo) => {
   };
 };
 
-const updateUserInfo = async (userData: Partial<UserSchema>) => {
+const updateUserInfo = async (userData: Partial<IUsers>) => {
   console.log(userData);
 };
 
