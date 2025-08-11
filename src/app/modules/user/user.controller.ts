@@ -10,6 +10,7 @@ import { findById } from '@/services/existCheckService';
 import { BadRequestError, NotFoundError } from '@/app/errors/apiError';
 import { userService } from './user.service';
 import UserprofileModel, { TUserProfile } from '../userprofile/userprofile.model';
+import { parseFields } from '@/utils/parseFields';
 
 const processUserRegistrationHandler = catchAsync(async (req, res) => {
   const { message, token } = await userService.processUserRegistration(req.body);
@@ -55,17 +56,12 @@ const registerUserHandler = catchAsync(async (req, res) => {
 });
 
 const getUsersHandler = catchAsync(async (req, res) => {
-  const fields = req.query.fields as string | undefined;
+  let selectedFields = parseFields(
+    req.query.fields as string | undefined,
+    req.query.ignoreFields as string | undefined,
+    ['password']
+  );
 
-  let selectedFields: string;
-  if (fields) {
-    selectedFields = fields
-      .split(',')
-      .filter((f) => f.trim() !== 'password')
-      .join(' ');
-  } else {
-    selectedFields = '-password';
-  }
   const { meta, data } = await qb<TUserProfile>(UserprofileModel)
     .select('-createdAt -updatedAt -__v')
     .populate({
