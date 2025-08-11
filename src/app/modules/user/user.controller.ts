@@ -9,6 +9,7 @@ import { ub } from '@/app/libs/updateBuilder';
 import { findById } from '@/services/existCheckService';
 import { BadRequestError, NotFoundError } from '@/app/errors/apiError';
 import { userService } from './user.service';
+import UserprofileModel, { TUserProfile } from '../userprofile/userprofile.model';
 
 const processUserRegistrationHandler = catchAsync(async (req, res) => {
   const { message, token } = await userService.processUserRegistration(req.body);
@@ -54,10 +55,25 @@ const registerUserHandler = catchAsync(async (req, res) => {
 });
 
 const getUsersHandler = catchAsync(async (req, res) => {
-  const { meta, data } = await qb<IUser>(UserModel)
-    .select('-password -createdAt -updatedAt')
-    .filter({ role: req.query.role })
-    .search(req.query.search, ['name', 'email',])
+  const fields = req.query.fields as string | undefined;
+
+  let selectedFields: string;
+  if (fields) {
+    selectedFields = fields
+      .split(',')
+      .filter((f) => f.trim() !== 'password')
+      .join(' ');
+  } else {
+    selectedFields = '-password';
+  }
+  const { meta, data } = await qb<TUserProfile>(UserprofileModel)
+    .select('-createdAt -updatedAt -__v')
+    .populate({
+      path: 'userId',
+      select: selectedFields,
+    })
+    .select(selectedFields)
+    .search(req.query.search, ['name'])
     .sort('-createdAt')
     .exec();
 
