@@ -11,5 +11,3 @@ export const superAdminCreateDetail = {
   email: SUPER_ADMIN_EMAIL,
   password: SUPER_ADMIN_PASSWORD,
 };
-
-console.log(superAdminCreateDetail);

@@ -46,13 +46,13 @@ const verifyCodeSchema = z.object({
   }),
 });
 
-export type PasswordSchema = z.infer<typeof passwordSchema>['body'];
+export type IPassword = z.infer<typeof passwordSchema>['body'];
 
-export type ResetPasswordSchema = z.infer<typeof resetPasswordSchema>['body'];
-export type ForgotPasswordSchema = z.infer<typeof forgotPasswordSchema>['body'];
+export type IResetPassword = z.infer<typeof resetPasswordSchema>['body'];
+export type IForgotPassword = z.infer<typeof forgotPasswordSchema>['body'];
 
-export type CookieRefreshToken = z.infer<typeof cookieRefreshToken>['cookies'];
-export type loginSchema = z.infer<typeof loginSchema>['body'];
+export type ICookieRefreshToken = z.infer<typeof cookieRefreshToken>['cookies'];
+export type ILogin = z.infer<typeof loginSchema>['body'];
 
 export type verify2FACodeType = z.infer<typeof verifyCodeSchema>['body'];
 
