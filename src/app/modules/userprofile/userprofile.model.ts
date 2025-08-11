@@ -1,7 +1,7 @@
-import { Schema, model } from 'mongoose';
+import { Document, Schema, model } from 'mongoose';
 import { IUserProfile } from './userProfile.interface';
-
-const userprofileSchema = new Schema<IUserProfile>(
+export interface TUserProfile extends Document, IUserProfile {}
+const userprofileSchema = new Schema<TUserProfile>(
   {
     userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     name: { type: String, required: true },
@@ -12,5 +12,5 @@ const userprofileSchema = new Schema<IUserProfile>(
   { timestamps: true }
 );
 
-const UserprofileModel = model<IUserProfile>('Userprofile', userprofileSchema);
+const UserprofileModel = model<TUserProfile>('Userprofile', userprofileSchema);
 export default UserprofileModel;

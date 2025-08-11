@@ -8,9 +8,7 @@ import { UserRole } from '../user/user.constant';
 import { DeviceInfo } from './auth.interface';
 import useragent from 'useragent';
 
-
-// TODO : after change password 
-
+// TODO : after change password
 
 const isAuthenticated = async (req: Request, _res: Response, next: NextFunction) => {
   try {
@@ -35,7 +33,7 @@ const isAuthenticated = async (req: Request, _res: Response, next: NextFunction)
     const currentDeviceInfo = getDeviceInfoFromRequest(req);
 
     if (
-      session.deviceInfo?.ip !== currentDeviceInfo.ip ||
+      session.deviceInfo?.ip !== normalizeIp(currentDeviceInfo.ip) ||
       session.deviceInfo?.browser !== currentDeviceInfo.browser ||
       session.deviceInfo?.os !== currentDeviceInfo.os
     ) {
