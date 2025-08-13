@@ -29,10 +29,7 @@ defineRoutes(userRouter, [
   {
     method: 'get',
     path: '/',
-    middlewares: [
-      authMiddlewares.isAuthenticated,
-      authMiddlewares.hasRole(USER_ROLES.SUPERADMIN, USER_ROLES.ADMIN),
-    ],
+    middlewares: [authMiddlewares.isAuthenticated, authMiddlewares.hasRole(USER_ROLES.ADMIN)],
     handler: userController.getUsersHandler,
   },
   {
@@ -41,7 +38,7 @@ defineRoutes(userRouter, [
     middlewares: [
       validateRequest(idSchema),
       authMiddlewares.isAuthenticated,
-      authMiddlewares.hasRole(USER_ROLES.SUPERADMIN, USER_ROLES.ADMIN),
+      authMiddlewares.hasRole(USER_ROLES.ADMIN),
     ],
     handler: userController.userDeActiveHandler,
   },
@@ -52,7 +49,7 @@ defineRoutes(userRouter, [
       validateRequest(idSchema),
       validateRequest(userValidationSchema.UserUpdateSchema),
       authMiddlewares.isAuthenticated,
-      authMiddlewares.hasRole(USER_ROLES.SUPERADMIN, USER_ROLES.ADMIN),
+      authMiddlewares.hasRole(USER_ROLES.ADMIN),
     ],
     handler: userController.userInfoUpdateHandler,
   },
@@ -62,7 +59,7 @@ defineRoutes(userRouter, [
     middlewares: [
       validateRequest(idSchema),
       authMiddlewares.isAuthenticated,
-      authMiddlewares.hasRole(USER_ROLES.SUPERADMIN, USER_ROLES.ADMIN),
+      authMiddlewares.hasRole(USER_ROLES.ADMIN),
     ],
     handler: userController.userInfoHandler,
   },
@@ -72,7 +69,7 @@ defineRoutes(userRouter, [
     middlewares: [
       validateRequest(idSchema),
       authMiddlewares.isAuthenticated,
-      authMiddlewares.hasRole(USER_ROLES.SUPERADMIN, USER_ROLES.ADMIN),
+      authMiddlewares.hasRole(USER_ROLES.ADMIN),
     ],
     handler: userController.userPermanentHandler,
   },

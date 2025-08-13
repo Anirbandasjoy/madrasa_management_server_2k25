@@ -7,6 +7,7 @@ import path from 'path';
 const envPath = path.resolve(process.cwd(), '.env');
 if (!fs.existsSync(envPath)) {
   console.error('⚠️  .env file not found. Please create one based on .env.example');
+  process.exit(1);
 } else {
   dotenv.config();
 }
@@ -34,6 +35,7 @@ if (missingKeys.length > 0) {
       ', '
     )}\nPlease update your .env file to match .env.example`
   );
+  process.exit(1);
 }
 
 const extraKeys = envLines.filter((key) => !exampleKeys.includes(key));
