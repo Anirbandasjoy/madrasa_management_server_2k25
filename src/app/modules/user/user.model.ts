@@ -1,11 +1,9 @@
 import { Document, Schema, model } from 'mongoose';
 import { hashPassword } from '@/utils/hash';
-import { IUsers } from './user.schema';
 import { USER_ROLES } from './user.constant';
+import { IUser } from './user.schema';
 
-export interface IUser extends Document, IUsers {}
-
-const userSchema = new Schema<IUser>(
+const userSchema = new Schema<IUser & Document>(
   {
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
@@ -29,6 +27,6 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-const UserModel = model<IUser>('User', userSchema);
+const UserModel = model<IUser & Document>('User', userSchema);
 
 export default UserModel;

@@ -39,7 +39,7 @@ const tokenSchema = z.object({
   }),
 });
 
-export type IUsers = z.infer<typeof UserSchema>['body'];
+export type IUser = z.infer<typeof UserSchema>['body'];
 export type IToken = z.infer<typeof tokenSchema>['body'];
 
 const UserUpdateSchema = UserSchema.partial().extend({
