@@ -8,21 +8,14 @@ import {
   generateToken,
   verifyRefreshToken,
 } from '@/utils/token/token';
-import {
-  CLIENT_URI,
-  JWT_ACCESS_EXPIRES_IN,
-  JWT_ACCESS_SECRET_KEY,
-  JWT_PASSWORD_FORGOT_PASSWORD_EXPIRES_IN,
-  JWT_PASSWORD_FORGOT_PASSWORD_SECRET,
-  JWT_REFRESH_EXPIRES_IN,
-  JWT_REFRESH_SECRET_KEY,
-} from '@/config/env';
+
 import { checkAndCreateSession } from '../session/session.service';
 import { IDeviceInfo, SessionModel } from '../session/session.model';
 import { CookieOptions } from 'express';
 import { loadEmailTemplate } from '@/utils/email/loadEmailTemplate';
 import sendingEmail from '@/services/email/emailSender';
 import UserprofileModel from '../userprofile/userprofile.model';
+import { config } from '@/config/env';
 
 const loginUser = async (loginInfo: ILogin, deviceInfo?: IDeviceInfo) => {
   const user = await UserModel.findOne({ email: loginInfo.email });
@@ -88,13 +81,17 @@ const loginUser = async (loginInfo: ILogin, deviceInfo?: IDeviceInfo) => {
     sessionId,
   };
 
-  const accessToken = generateToken(data, JWT_ACCESS_SECRET_KEY as string, JWT_ACCESS_EXPIRES_IN);
+  const accessToken = generateToken(
+    data,
+    config.JWT_ACCESS_SECRET_KEY as string,
+    config.JWT_ACCESS_EXPIRES_IN
+  );
   if (!accessToken) throw UnauthorizedError('Access token creation failed');
 
   const refreshToken = generateToken(
     data,
-    JWT_REFRESH_SECRET_KEY as string,
-    JWT_REFRESH_EXPIRES_IN
+    config.JWT_REFRESH_SECRET_KEY as string,
+    config.JWT_REFRESH_EXPIRES_IN
   );
   if (!refreshToken) throw UnauthorizedError('Refresh token creation failed');
 
@@ -108,7 +105,11 @@ const refreshToAccessTokenGenerator = async (token: string) => {
     user: decodedToken.user,
     sessionId: decodedToken.sessionId,
   };
-  const accessToken = generateToken(data, JWT_ACCESS_SECRET_KEY as string, JWT_ACCESS_EXPIRES_IN);
+  const accessToken = generateToken(
+    data,
+    config.JWT_ACCESS_SECRET_KEY as string,
+    config.JWT_ACCESS_EXPIRES_IN
+  );
   if (!accessToken) throw UnauthorizedError('Access token creation failed');
   return { accessToken };
 };
@@ -119,14 +120,14 @@ const forgotPassword = async (email: string) => {
 
   const token = generateToken(
     { email },
-    JWT_PASSWORD_FORGOT_PASSWORD_SECRET as string,
-    JWT_PASSWORD_FORGOT_PASSWORD_EXPIRES_IN
+    config.JWT_PASSWORD_FORGOT_PASSWORD_SECRET as string,
+    config.JWT_PASSWORD_FORGOT_PASSWORD_EXPIRES_IN
   );
   if (!token) throw UnauthorizedError('Token creation failed');
 
   const html = loadEmailTemplate('resetPassword.html', {
     user_name: user.name,
-    reset_link: CLIENT_URI + '/reset-password?token=' + token,
+    reset_link: config.CLIENT_URI + '/reset-password?token=' + token,
   });
 
   const emailData = {
@@ -258,13 +259,17 @@ const verify2FACode = async (verifyCredential: verify2FACodeType, deviceInfo?: I
     sessionId,
   };
 
-  const accessToken = generateToken(data, JWT_ACCESS_SECRET_KEY as string, JWT_ACCESS_EXPIRES_IN);
+  const accessToken = generateToken(
+    data,
+    config.JWT_ACCESS_SECRET_KEY as string,
+    config.JWT_ACCESS_EXPIRES_IN
+  );
   if (!accessToken) throw UnauthorizedError('Access token creation failed');
 
   const refreshToken = generateToken(
     data,
-    JWT_REFRESH_SECRET_KEY as string,
-    JWT_REFRESH_EXPIRES_IN
+    config.JWT_REFRESH_SECRET_KEY as string,
+    config.JWT_REFRESH_EXPIRES_IN
   );
   if (!refreshToken) throw UnauthorizedError('Refresh token creation failed');
 
