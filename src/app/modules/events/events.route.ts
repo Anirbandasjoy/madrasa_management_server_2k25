@@ -24,6 +24,11 @@ defineRoutes(eventsRouter, [
     path: '/',
     handler: eventsController.getEventsHandler,
   },
+  {
+    method: 'get',
+    path: '/:id',
+    handler: eventsController.getEventHandler,
+  },
 ]);
 
 export default eventsRouter;

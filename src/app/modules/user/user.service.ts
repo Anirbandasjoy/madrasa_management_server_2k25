@@ -1,5 +1,4 @@
 import UserModel from './user.model';
-import { IUsers } from './user.schema';
 import {
   BadRequestError,
   ConflictError,
@@ -15,6 +14,7 @@ import { checkAndCreateSession } from '../session/session.service';
 import sendingEmail from '@/services/email/emailSender';
 import UserprofileModel from '../userprofile/userprofile.model';
 import { config } from '@/config/env';
+import { IUser } from './user.schema';
 
 const existUserByEmail = async <T>(
   model: any,
@@ -38,7 +38,7 @@ const existUserByEmail = async <T>(
   }
 };
 
-const processUserRegistration = async (userData: IUsers) => {
+const processUserRegistration = async (userData: IUser) => {
   await existUserByEmail(UserModel, userData.email as string);
 
   const token = generateToken(
@@ -78,7 +78,7 @@ const processUserRegistration = async (userData: IUsers) => {
 };
 
 const registerUser = async (token: string, deviceInfo?: IDeviceInfo) => {
-  const decode = jwt.verify(token, config.JWT_PROCESS_REGISTRATION_SECRET_KEY) as IUsers;
+  const decode = jwt.verify(token, config.JWT_PROCESS_REGISTRATION_SECRET_KEY) as IUser;
 
   if (!decode) {
     throw NonAuthoritativeInformation('Non Authoritative Information');
@@ -139,7 +139,7 @@ const registerUser = async (token: string, deviceInfo?: IDeviceInfo) => {
   };
 };
 
-const updateUserInfo = async (userData: Partial<IUsers>) => {
+const updateUserInfo = async (userData: Partial<IUser>) => {
   console.log(userData);
 };
 

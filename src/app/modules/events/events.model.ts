@@ -1,5 +1,6 @@
 import { Schema, model, Document } from 'mongoose';
 import { IEvents } from './events.schema';
+import { EVENTS_STATUS } from './events.constant';
 
 const eventsSchema = new Schema<IEvents & Document>(
   {
@@ -11,6 +12,11 @@ const eventsSchema = new Schema<IEvents & Document>(
     images: {
       type: [String],
       required: true,
+    },
+    status: {
+      type: String,
+      enum: Object.values(EVENTS_STATUS),
+      default: EVENTS_STATUS.DRAFT,
     },
   },
   { timestamps: true }

@@ -32,3 +32,18 @@ export function parseFields(
 
   return alwaysIgnore.map((f) => '-' + f).join(' ');
 }
+
+export function parseField(fieldStr?: string, ignoreFieldsStr?: string): string | null {
+  const ignoreFields = ignoreFieldsStr ? ignoreFieldsStr.split(',').map((f) => f.trim()) : [];
+
+  const fields = fieldStr ? fieldStr.split(',').map((f) => f.trim()) : null;
+
+  if (fields) {
+    const selected = fields.filter((f) => !ignoreFields.includes(f));
+    return selected.join(' ');
+  } else if (ignoreFields.length) {
+    return '-' + ignoreFields.join(' -');
+  }
+
+  return null; 
+}
