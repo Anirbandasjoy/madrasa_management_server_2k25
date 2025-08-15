@@ -13,6 +13,7 @@
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "express-rate-limit": "^7.5.0",
+    "geoip-lite": "^1.4.10",
     "http-status-codes": "^2.3.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.15.1",
@@ -32,7 +33,6 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "fix-all": "eslint . --ext .js,.ts,.tsx --fix && prettier --write .",
-    "seed:superadmin": "ts-node -r tsconfig-paths/register src/scripts/seedSuperAdmin.ts",
     "create-module": "ts-node src/scripts/createModule.ts",
     "clear": "rm -rf dist node_modules yarn.lock"
   },
@@ -41,6 +41,7 @@
     "@types/cookie-parser": "^1.4.8",
     "@types/cors": "^2.8.18",
     "@types/express": "^5.0.2",
+    "@types/geoip-lite": "^1.4.4",
     "@types/morgan": "^1.9.9",
     "@types/ms": "^2.1.0",
     "@types/node": "^22.15.30",
