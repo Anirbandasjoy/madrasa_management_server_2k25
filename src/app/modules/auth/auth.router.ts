@@ -82,6 +82,12 @@ defineRoutes(authRouter, [
     middlewares: [validateRequest(authSchema.verifyCodeSchema), authMiddlewares.detectDeviceInfo],
     handler: authController.verify2FAHandler,
   },
+  {
+    method: 'get',
+    path: '/logged-in-user',
+    middlewares: [authMiddlewares.isAuthenticated],
+    handler: authController.loggedInUserHandler,
+  },
 ]);
 
 export default authRouter;

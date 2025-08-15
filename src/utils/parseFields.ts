@@ -34,16 +34,26 @@ export function parseFields(
 }
 
 export function parseField(fieldStr?: string, ignoreFieldsStr?: string): string | null {
-  const ignoreFields = ignoreFieldsStr ? ignoreFieldsStr.split(',').map((f) => f.trim()) : [];
+  const alwaysIgnore = ['password'];
 
-  const fields = fieldStr ? fieldStr.split(',').map((f) => f.trim()) : null;
+  const ignoreFields = [
+    ...alwaysIgnore,
+    ...(ignoreFieldsStr ? ignoreFieldsStr.split(',').map((f) => f.trim()) : []),
+  ];
 
-  if (fields) {
+  const fields = fieldStr
+    ? fieldStr
+        .split(',')
+        .map((f) => f.trim())
+        .filter((f) => !alwaysIgnore.includes(f))
+    : null;
+
+  if (fields && fields.length) {
     const selected = fields.filter((f) => !ignoreFields.includes(f));
     return selected.join(' ');
   } else if (ignoreFields.length) {
     return '-' + ignoreFields.join(' -');
   }
 
-  return null; 
+  return null;
 }
