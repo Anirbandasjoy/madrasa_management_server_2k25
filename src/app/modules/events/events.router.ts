@@ -29,6 +29,16 @@ defineRoutes(eventsRouter, [
     path: '/:id',
     handler: eventsController.getEventHandler,
   },
+  {
+    method: 'put',
+    path: '/:id',
+    middlewares: [
+      authMiddlewares.isAuthenticated,
+      authMiddlewares.hasRole(USER_ROLES.ADMIN),
+      validateRequest(eventsSchema.updateEvents),
+    ],
+    handler: eventsController.updateEventHandler,
+  },
 ]);
 
 export default eventsRouter;

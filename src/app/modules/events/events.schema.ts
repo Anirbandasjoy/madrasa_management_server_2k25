@@ -14,8 +14,13 @@ export const createEvents = z.object({
   }),
 });
 
+// use partial
+
+export const updateEvents = createEvents.shape.body.partial();
+
 export const eventsSchema = {
   createEvents,
+  updateEvents,
 };
 
 export type IEvents = z.infer<typeof createEvents>['body'];
