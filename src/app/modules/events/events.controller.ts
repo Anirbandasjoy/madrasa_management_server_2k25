@@ -54,8 +54,33 @@ const getEventHandler = catchAsync(async (req, res) => {
   });
 });
 
+const updateEventHandler = catchAsync(async (req, res) => {
+  const selectedField = parseField(
+    Object.keys(req.body).join(',') as string | undefined,
+    req.query.ignoreFields as string | undefined
+  );
+
+  const event = await eventsService.updateEvent(req.params.id, req.body, selectedField);
+
+  sendSuccessResponse(res, {
+    statusCode: StatusCodes.OK,
+    message: 'Event updated successfully',
+    data: event,
+  });
+});
+
+const deleteEventHandler = catchAsync(async (req, res) => {
+  await eventsService.deleteEvent(req.params.id);
+  sendSuccessResponse(res, {
+    statusCode: StatusCodes.OK,
+    message: 'Event deleted successfully',
+  });
+});
+
 export const eventsController = {
   createEventsHandler,
   getEventsHandler,
   getEventHandler,
+  deleteEventHandler,
+  updateEventHandler,
 };
