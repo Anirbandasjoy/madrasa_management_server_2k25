@@ -8,6 +8,7 @@ import { expiresAccessTokenInMs, expiresRefreshTokenInMs } from '@/app/helper/ex
 import { NotFoundError, UnauthorizedError } from '@/app/errors/apiError';
 import { Types } from 'mongoose';
 import { authService } from './auth.service';
+import { parseField } from '@/utils/parseFields';
 
 const loginHandler = catchAsync(async (req, res) => {
   const deviceInfo = req.deviceInfo;
@@ -171,10 +172,24 @@ const verify2FAHandler = catchAsync(async (req, res) => {
   });
 });
 
+const loggedInUserHandler = catchAsync(async (req, res) => {
+  const selectedField = parseField(
+    req.query.fields as string | undefined,
+    req.query.ignoreFields as string | undefined
+  );
+  const userId = req.user?._id;
+  const user = await authService.getUserById(userId, selectedField);
+  sendSuccessResponse(res, {
+    message: 'User retrieved successfully',
+    data: user,
+  });
+});
+
 export const authController = {
   loginHandler,
   logOutHandler,
   logOutAllDevices,
+  loggedInUserHandler,
   refreshToAccessTokenGeneratorHandler,
   forgotPasswordHandler,
   resetPasswordHandler,
