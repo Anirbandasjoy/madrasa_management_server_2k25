@@ -56,7 +56,7 @@ export default ${Class}Model;
 
   schema: (_: string, Class: string, varName: string) => `import { z } from 'zod';
 
-export const create${Class} = z.object({
+const create${Class} = z.object({
   body: z.object({
     name: z.string({ required_error: '${Class} name is required' }),
   }),
