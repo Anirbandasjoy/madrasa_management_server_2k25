@@ -24,8 +24,13 @@ const updateEvent = async (
   return event;
 };
 
+const deleteEvent = async (id: string) => {
+  await EventsModel.findByIdAndDelete(id);
+};
+
 export const eventsService = {
   createEvents,
   getEvent,
   updateEvent,
+  deleteEvent,
 };

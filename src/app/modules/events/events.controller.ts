@@ -69,9 +69,18 @@ const updateEventHandler = catchAsync(async (req, res) => {
   });
 });
 
+const deleteEventHandler = catchAsync(async (req, res) => {
+  await eventsService.deleteEvent(req.params.id);
+  sendSuccessResponse(res, {
+    statusCode: StatusCodes.OK,
+    message: 'Event deleted successfully',
+  });
+});
+
 export const eventsController = {
   createEventsHandler,
   getEventsHandler,
   getEventHandler,
+  deleteEventHandler,
   updateEventHandler,
 };

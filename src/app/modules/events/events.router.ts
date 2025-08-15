@@ -39,6 +39,12 @@ defineRoutes(eventsRouter, [
     ],
     handler: eventsController.updateEventHandler,
   },
+  {
+    method: 'delete',
+    path: '/:id',
+    middlewares: [authMiddlewares.isAuthenticated, authMiddlewares.hasRole(USER_ROLES.ADMIN)],
+    handler: eventsController.deleteEventHandler,
+  },
 ]);
 
 export default eventsRouter;
