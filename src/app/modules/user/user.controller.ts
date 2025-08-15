@@ -4,11 +4,13 @@ import { StatusCodes } from 'http-status-codes';
 import { generateCookie } from '@/utils/cookie/cookie';
 import { expiresAccessTokenInMs, expiresRefreshTokenInMs } from '@/app/helper/expiresInMs';
 import { qb } from '@/app/libs/qb';
-import UserModel, { IUser } from './user.model';
+import UserModel from './user.model';
 import { ub } from '@/app/libs/updateBuilder';
 import { findById } from '@/services/existCheckService';
 import { BadRequestError, NotFoundError } from '@/app/errors/apiError';
 import { userService } from './user.service';
+import UserprofileModel from '../userprofile/userprofile.model';
+import { parseFields } from '@/utils/parseFields';
 
 const processUserRegistrationHandler = catchAsync(async (req, res) => {
   const { message, token } = await userService.processUserRegistration(req.body);
@@ -54,10 +56,20 @@ const registerUserHandler = catchAsync(async (req, res) => {
 });
 
 const getUsersHandler = catchAsync(async (req, res) => {
-  const { meta, data } = await qb<IUser>(UserModel)
-    .select('-password -createdAt -updatedAt')
-    .filter({ role: req.query.role })
-    .search(req.query.search, ['name', 'email',])
+  let selectedFields = parseFields(
+    req.query.fields as string | undefined,
+    req.query.ignoreFields as string | undefined,
+    ['password']
+  );
+
+  const { meta, data } = await qb(UserprofileModel)
+    .select('-createdAt -updatedAt -__v')
+    .populate({
+      path: 'userId',
+      select: selectedFields,
+    })
+    .select(selectedFields)
+    .search(req.query.search, ['name'])
     .sort('-createdAt')
     .exec();
 
@@ -68,7 +80,7 @@ const getUsersHandler = catchAsync(async (req, res) => {
 });
 
 const userInfoUpdateHandler = catchAsync(async (req, res) => {
-  const userUpdater = ub<IUser>(UserModel, 'name', 'profilePicture');
+  const userUpdater = ub(UserModel, 'name', 'profilePicture');
   const { data: user } = await userUpdater.updateById(req.params.id, req.body);
   sendSuccessResponse(res, {
     message: 'User updated successfully',
@@ -86,7 +98,7 @@ const userDeActiveHandler = catchAsync(async (req, res) => {
   ) {
     throw BadRequestError('User is already deleted');
   }
-  const userUpdate = ub<IUser>(UserModel, 'isActive');
+  const userUpdate = ub(UserModel, 'isActive');
   const { data: user } = await userUpdate.updateById(req.params.id, { isActive: false });
   sendSuccessResponse(res, {
     message: 'User deleted successfully',
