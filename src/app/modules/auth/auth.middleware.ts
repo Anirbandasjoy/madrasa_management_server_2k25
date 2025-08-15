@@ -7,6 +7,7 @@ import { getDeviceInfoFromRequest } from '@/app/helper/getDeviceInfoFromRequest'
 import { UserRole } from '../user/user.constant';
 import { DeviceInfo } from './auth.interface';
 import useragent from 'useragent';
+import geoip from 'geoip-lite';
 
 // TODO : after change password
 
@@ -32,12 +33,19 @@ const isAuthenticated = async (req: Request, _res: Response, next: NextFunction)
 
     const currentDeviceInfo = getDeviceInfoFromRequest(req);
 
-    if (
-      session.deviceInfo?.ip !== normalizeIp(currentDeviceInfo.ip) ||
-      session.deviceInfo?.browser !== currentDeviceInfo.browser ||
-      session.deviceInfo?.os !== currentDeviceInfo.os
-    ) {
-      throw UnauthorizedError('Device information mismatch. Unauthorized access.');
+    const storedIp = session?.deviceInfo?.ip;
+    const currentIp = normalizeIp(currentDeviceInfo.ip);
+
+    const sameDevice =
+      session.deviceInfo?.browser === currentDeviceInfo.browser &&
+      session.deviceInfo?.os === currentDeviceInfo.os;
+
+    const sameIp =
+      isSameSubnet(storedIp ?? '0.0.0.0', currentIp ?? '0.0.0.0', 2) ||
+      isSameRegion(storedIp ?? '0.0.0.0', currentIp ?? '0.0.0.0');
+
+    if (!sameDevice || !sameIp) {
+      throw UnauthorizedError('Device or location mismatch. Unauthorized access.');
     }
 
     req.user = {
@@ -147,6 +155,32 @@ const detectDeviceInfo = (req: Request, _res: Response, next: NextFunction): voi
     next();
   }
 };
+
+export function isSameSubnet(ip1: string, ip2: string, matchOctets = 2): boolean {
+  if (!ip1 || !ip2) return false;
+
+  const parts1 = ip1.split('.');
+  const parts2 = ip2.split('.');
+
+  if (parts1.length !== 4 || parts2.length !== 4) return false;
+
+  for (let i = 0; i < matchOctets; i++) {
+    if (parts1[i] !== parts2[i]) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+export function isSameRegion(ip1: string, ip2: string): boolean {
+  const loc1 = geoip.lookup(ip1);
+  const loc2 = geoip.lookup(ip2);
+
+  if (!loc1 || !loc2) return false;
+
+  return loc1.country === loc2.country && loc1.region === loc2.region;
+}
 
 export const authMiddlewares = {
   isAuthenticated,

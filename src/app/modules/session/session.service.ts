@@ -2,9 +2,8 @@ import crypto from 'crypto';
 import { Types } from 'mongoose';
 import { IDeviceInfo, SessionModel } from './session.model';
 import { expiresRefreshTokenInMs } from '@/app/helper/expiresInMs';
-
+import { isSameRegion, isSameSubnet } from '../auth/auth.middleware';
 const MAX_SESSIONS = 3;
-
 function generateSessionId() {
   return crypto.randomBytes(16).toString('hex');
 }
@@ -17,11 +16,19 @@ export async function checkAndCreateSession(
     throw new Error('Device information is required to create session');
   }
 
-  const sessions = await SessionModel.find({ userId }).sort({ createdAt: 1 });
+  const sessions = await SessionModel.find({ userId }).sort({ createdAt: -1 });
 
   const existingSession = sessions.find((session) => {
+    const storedIp = session.deviceInfo?.ip;
+    const currentIp = deviceInfo.ip;
+
+    const sameIp =
+      storedIp &&
+      currentIp &&
+      (isSameSubnet(storedIp, currentIp, 2) || isSameRegion(storedIp, currentIp));
+
     return (
-      session.deviceInfo?.ip === deviceInfo.ip &&
+      sameIp &&
       session.deviceInfo?.browser === deviceInfo.browser &&
       session.deviceInfo?.os === deviceInfo.os
     );
@@ -31,10 +38,8 @@ export async function checkAndCreateSession(
     if (typeof expiresRefreshTokenInMs !== 'number') {
       throw new Error('Invalid JWT_REFRESH_EXPIRES_IN format');
     }
-
     existingSession.expiresAt = new Date(Date.now() + expiresRefreshTokenInMs);
     await existingSession.save();
-
     return { sessionId: existingSession.sessionId };
   }
 
