@@ -276,6 +276,18 @@ const verify2FACode = async (verifyCredential: verify2FACodeType, deviceInfo?: I
   return { accessToken, refreshToken, user };
 };
 
+const getUserById = async (userId: string, selectedField?: string | null) => {
+  console.log(selectedField)
+  const user = selectedField
+    ? await UserprofileModel.findOne({ userId }).select(selectedField).populate({
+        path: 'userId',
+        select: selectedField,
+      })
+    : await UserprofileModel.findOne({ userId }).populate('userId');
+  if (!user) throw NotFoundError('User not found');
+  return user;
+};
+
 export const authService = {
   loginUser,
   refreshToAccessTokenGenerator,
@@ -285,4 +297,5 @@ export const authService = {
   enabled2FA,
   disabled2FA,
   verify2FACode,
+  getUserById,
 };
