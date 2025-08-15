@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { EVENTS_STATUS } from './events.constant';
 
-export const createEvents = z.object({
+const createEvents = z.object({
   body: z.object({
     title: z.string({ required_error: 'Events name is required' }),
     description: z.string(),
@@ -14,8 +14,13 @@ export const createEvents = z.object({
   }),
 });
 
+// use partial
+
+const updateEvents = createEvents.shape.body.partial();
+
 export const eventsSchema = {
   createEvents,
+  updateEvents,
 };
 
 export type IEvents = z.infer<typeof createEvents>['body'];
