@@ -16,6 +16,8 @@ const createEventsHandler = catchAsync(async (req, res) => {
   });
 });
 
+// get
+
 const getEventsHandler = catchAsync(async (req, res) => {
   let selectedFields = parseFields(
     req.query.fields as string | undefined,
