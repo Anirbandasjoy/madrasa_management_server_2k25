@@ -27,7 +27,27 @@ const getTeam = async (id:string,selectedField?:string|null) => {
   return team;
 };
 
+
+
+const updateTeam = async (
+  id: string,
+  payload: Partial<ITeam>,
+  selectedField?: string | null
+) => {
+
+  const event = selectedField
+    ? await TeamModel.findByIdAndUpdate(id, payload, { new: true }).select(selectedField)
+    : await TeamModel.findByIdAndUpdate(id, payload, { new: true });
+  return event;
+};
+
+const deleteTeam = async (id: string) => {
+  await TeamModel.findByIdAndDelete(id);
+};
+
 export const teamService = {
   createTeam,
   getTeam,
+  updateTeam,
+  deleteTeam,
 };
