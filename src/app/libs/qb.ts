@@ -79,9 +79,10 @@ class QueryBuilder<Doc extends Document = Document, Lean = Doc> {
     return this;
   }
 
-  paginate(page?: unknown, limit?: unknown) {
+  paginate({ page, limit }: { page?: unknown; limit?: unknown }) {
     let p = 1;
     let l = 10;
+
     if (page !== undefined && page !== null) {
       p = typeof page === 'string' ? parseInt(page, 10) : Number(page);
       if (isNaN(p) || p < 1) p = 1;
@@ -90,15 +91,18 @@ class QueryBuilder<Doc extends Document = Document, Lean = Doc> {
       l = typeof limit === 'string' ? parseInt(limit, 10) : Number(limit);
       if (isNaN(l) || l < 1) l = 10;
     }
+
     this.page = p;
     this.limit = l;
     const skip = (this.page - 1) * this.limit;
     this.query = this.query.skip(skip).limit(this.limit);
+
     return this;
   }
 
   async exec(): Promise<PaginatedResponse<Lean>> {
     const filter = this.query.getFilter() as FilterQuery<Doc>;
+
     const total = await this.model.countDocuments(filter);
     const totalPages = Math.ceil(total / this.limit);
     const data = (await this.query.lean().exec()) as Lean[];
@@ -112,6 +116,7 @@ class QueryBuilder<Doc extends Document = Document, Lean = Doc> {
       nextPage: this.page < totalPages ? this.page + 1 : null,
       prevPage: this.page > 1 ? this.page - 1 : null,
     };
+
     return { meta, data };
   }
 }

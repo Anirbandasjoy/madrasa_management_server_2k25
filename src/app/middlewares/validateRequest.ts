@@ -1,5 +1,6 @@
 import { AnyZodObject } from 'zod';
 import { Request, Response, NextFunction } from 'express';
+import { handleZodError } from '../errors/handlers/zodErrorHandler';
 import { sendErrorResponse } from '@/utils/response';
 
 const validateRequest =
@@ -14,14 +15,11 @@ const validateRequest =
       });
       next();
     } catch (error: any) {
+      const { message, statusCode, errorDetails } = handleZodError(error);
       sendErrorResponse(res, {
-        statusCode: 400,
-        message: 'Validation Error',
-        error: error.errors.map((err: any) => ({
-          message: err.message,
-          path: err.path,
-          expected: err.expected,
-        })),
+        statusCode,
+        message,
+        error: errorDetails,
       });
     }
   };

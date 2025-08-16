@@ -71,6 +71,10 @@ const getUsersHandler = catchAsync(async (req, res) => {
     .select(selectedFields)
     .search(req.query.search, ['name'])
     .sort('-createdAt')
+    .paginate({
+      page: Number(req.query.page) || 1,
+      limit: Number(req.query.limit) || 10,
+    })
     .exec();
 
   sendSuccessResponse(res, {

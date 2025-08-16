@@ -34,7 +34,7 @@
     "format": "prettier --write .",
     "fix-all": "eslint . --ext .js,.ts,.tsx --fix && prettier --write .",
     "create-module": "ts-node src/scripts/createModule.ts",
-    "clear": "rm -rf dist node_modules yarn.lock"
+    "clear": "rm -rf dist node_modules yarn.lock && yarn"
   },
   "devDependencies": {
     "@eslint/js": "^9.28.0",
