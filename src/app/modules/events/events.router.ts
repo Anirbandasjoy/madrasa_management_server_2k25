@@ -5,6 +5,7 @@ import { defineRoutes } from '@/utils/defineRoutes';
 import { eventsController } from './events.controller';
 import { authMiddlewares } from '../auth/auth.middleware';
 import { USER_ROLES } from '../user/user.constant';
+import { loginLimiter } from '@/utils/loginLimiter';
 
 const eventsRouter = Router();
 
@@ -22,6 +23,7 @@ defineRoutes(eventsRouter, [
   {
     method: 'get',
     path: '/',
+    middlewares: [loginLimiter],
     handler: eventsController.getEventsHandler,
   },
   {

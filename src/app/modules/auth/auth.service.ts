@@ -277,7 +277,6 @@ const verify2FACode = async (verifyCredential: verify2FACodeType, deviceInfo?: I
 };
 
 const getUserById = async (userId: string, selectedField?: string | null) => {
-  console.log(selectedField)
   const user = selectedField
     ? await UserprofileModel.findOne({ userId }).select(selectedField).populate({
         path: 'userId',

@@ -80,8 +80,15 @@ const errorHandler: ErrorRequestHandler = (
     statusCode = StatusCodes.INTERNAL_SERVER_ERROR;
     message = 'Email service credentials are missing. Please check SMTP configuration.';
     errorDetails = err.stack;
+  } else if (
+    (err.status === StatusCodes.TOO_MANY_REQUESTS ||
+      err.statusCode === StatusCodes.TOO_MANY_REQUESTS) &&
+    typeof err.message === 'string'
+  ) {
+    statusCode = StatusCodes.TOO_MANY_REQUESTS;
+    message = err.message || 'Too many requests. Please try again later.';
+    errorDetails = undefined;
   }
-
   // Custom ApiError
   else if (err instanceof ApiError) {
     statusCode = err.statusCode;
