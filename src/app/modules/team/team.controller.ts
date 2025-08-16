@@ -36,6 +36,7 @@ export const getTeamHandler = catchAsync(async (req, res) => {
   });
 });
 
+
 export const getTeamByIdHandler = catchAsync(async (req, res) => {
   const selectedField = parseField(
     req.query.fields as string | undefined,
@@ -50,5 +51,30 @@ export const getTeamByIdHandler = catchAsync(async (req, res) => {
     statusCode: StatusCodes.OK,
     message: 'Team fetched successfully',
     data: team,
+  });
+});
+
+
+
+export const updateTeamHandler = catchAsync(async (req, res) => {
+  const selectedField = parseField(
+    Object.keys(req.body).join(',') as string | undefined,
+    req.query.ignoreFields as string | undefined
+  );
+
+  const Team = await teamService.updateTeam(req.params.id, req.body, selectedField);
+
+  sendSuccessResponse(res, {
+    statusCode: StatusCodes.OK,
+    message: 'Team updated successfully',
+    data: Team,
+  });
+});
+
+export const deleteTeamHandler = catchAsync(async (req, res) => {
+  await teamService.deleteTeam(req.params.id);
+  sendSuccessResponse(res, {
+    statusCode: StatusCodes.OK,
+    message: 'Team deleted successfully',
   });
 });
