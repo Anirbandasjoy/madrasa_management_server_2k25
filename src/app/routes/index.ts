@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import userRouter from '@/app/modules/user/user.router';
 import authRouter from '../modules/auth/auth.router';
+import teamRouter from '../modules/team/team.route';
 import eventsRouter from '../modules/events/events.router';
 
 const router = Router();
@@ -17,6 +18,10 @@ const routes = [
   {
     path: '/events',
     router: eventsRouter,
+  },
+  {
+    path: '/team',
+    router: teamRouter,
   },
 ];
 
