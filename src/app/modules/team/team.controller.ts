@@ -2,9 +2,9 @@ import catchAsync from '@/utils/catchAsync';
 import { teamService } from './team.service';
 import { sendSuccessResponse } from '@/utils/response';
 import { StatusCodes } from 'http-status-codes';
-import { qb } from '@/app/libs/qb';
 import TeamModel from './team.model';
 import { parseField, parseFields } from '@/utils/parseFields';
+import { qb } from '@/app/libs/qb';
 
 export const createTeamHandler = catchAsync(async (req, res) => {
   const data = await teamService.createTeam(req.body);
@@ -16,17 +16,17 @@ export const createTeamHandler = catchAsync(async (req, res) => {
 });
 
 export const getTeamHandler = catchAsync(async (req, res) => {
-
   let selectedFields = parseFields(
     req.query.fields as string | undefined,
     req.query.ignoreFields as string | undefined,
     ['password']
   );
 
-  const { meta, data }:any = await qb(TeamModel)
+  const { meta, data } = await qb(TeamModel)
     .select(selectedFields)
     .search(req.query.search)
-    .sort('-createdAt');
+    .sort('-createdAt')
+    .exec();
 
   console.log(meta, data);
   sendSuccessResponse(res, {
