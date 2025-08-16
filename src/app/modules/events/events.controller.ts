@@ -48,8 +48,6 @@ const getEventHandler = catchAsync(async (req, res) => {
     req.query.ignoreFields as string | undefined
   );
 
-  console.log(selectedField);
-
   const event = await eventsService.getEvent(req.params.id, selectedField);
 
   sendSuccessResponse(res, {
