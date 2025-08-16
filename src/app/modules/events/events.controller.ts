@@ -22,11 +22,16 @@ const getEventsHandler = catchAsync(async (req, res) => {
     req.query.ignoreFields as string | undefined,
     ['password']
   );
+  console.log(req.query.limit);
 
   const { meta, data } = await qb(EventsModel)
     .select(selectedFields)
     .search(req.query.search, ['title', 'description'])
     .filter({ status: req.query.status || EVENTS_STATUS.PUBLISHED })
+    .paginate({
+      page: Number(req.query.page) || 1,
+      limit: Number(req.query.limit) || 10,
+    })
     .sort('-createdAt')
     .exec();
 
