@@ -32,7 +32,7 @@ defineRoutes(eventsRouter, [
     handler: eventsController.getEventHandler,
   },
   {
-    method: 'put',
+    method: 'patch',
     path: '/:id',
     middlewares: [
       authMiddlewares.isAuthenticated,

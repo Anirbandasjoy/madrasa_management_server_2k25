@@ -1,10 +1,8 @@
 import { AnyZodObject } from 'zod';
 import { Request, Response, NextFunction } from 'express';
-import { handleZodError } from '../errors/handlers/zodErrorHandler';
-import { sendErrorResponse } from '@/utils/response';
 
 const validateRequest =
-  (schema: AnyZodObject) => (req: Request, res: Response, next: NextFunction) => {
+  (schema: AnyZodObject) => (req: Request, _res: Response, next: NextFunction) => {
     try {
       schema.parse({
         body: req.body,
@@ -15,12 +13,7 @@ const validateRequest =
       });
       next();
     } catch (error: any) {
-      const { message, statusCode, errorDetails } = handleZodError(error);
-      sendErrorResponse(res, {
-        statusCode,
-        message,
-        error: errorDetails,
-      });
+      next(error);
     }
   };
 
