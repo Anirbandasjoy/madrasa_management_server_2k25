@@ -16,7 +16,9 @@ const createEvents = z.object({
 
 // use partial
 
-const updateEvents = createEvents.shape.body.partial();
+const updateEvents = z.object({
+  body: createEvents.shape.body.partial(),
+});
 
 export const eventsSchema = {
   createEvents,

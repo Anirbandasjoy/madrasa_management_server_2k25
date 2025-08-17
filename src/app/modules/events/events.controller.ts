@@ -5,7 +5,6 @@ import { StatusCodes } from 'http-status-codes';
 import { parseField, parseFields } from '@/utils/parseFields';
 import { qb } from '@/app/libs/qb';
 import EventsModel from './events.model';
-import { EVENTS_STATUS } from './events.constant';
 
 const createEventsHandler = catchAsync(async (req, res) => {
   const data = await eventsService.createEvents(req.body);
@@ -16,20 +15,17 @@ const createEventsHandler = catchAsync(async (req, res) => {
   });
 });
 
-// get
-
 const getEventsHandler = catchAsync(async (req, res) => {
   let selectedFields = parseFields(
     req.query.fields as string | undefined,
     req.query.ignoreFields as string | undefined,
     ['password']
   );
-  console.log(req.query.limit);
 
   const { meta, data } = await qb(EventsModel)
     .select(selectedFields)
     .search(req.query.search, ['title', 'description'])
-    .filter({ status: req.query.status || EVENTS_STATUS.PUBLISHED })
+    .filter({ status: req.query.status })
     .paginate({
       page: Number(req.query.page) || 1,
       limit: Number(req.query.limit) || 10,
@@ -60,12 +56,12 @@ const getEventHandler = catchAsync(async (req, res) => {
 });
 
 const updateEventHandler = catchAsync(async (req, res) => {
-  const selectedField = parseField(
+  const selectedFields = parseField(
     Object.keys(req.body).join(',') as string | undefined,
     req.query.ignoreFields as string | undefined
   );
 
-  const event = await eventsService.updateEvent(req.params.id, req.body, selectedField);
+  const event = await eventsService.updateEvent(req.params.id, req.body, selectedFields);
 
   sendSuccessResponse(res, {
     statusCode: StatusCodes.OK,
