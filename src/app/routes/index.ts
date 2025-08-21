@@ -29,10 +29,7 @@ const routes = [
     path: '/team',
     router: teamRouter,
   },
-  {
-    path: '/team',
-    router: teamRouter,
-  },
+
   {
     path: '/notice',
     router: noticeRouter,

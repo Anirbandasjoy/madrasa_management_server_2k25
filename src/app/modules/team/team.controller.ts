@@ -25,6 +25,13 @@ export const getTeamHandler = catchAsync(async (req, res) => {
   const { meta, data } = await qb(TeamModel)
     .select(selectedFields)
     .search(req.query.search)
+    .filter({
+      status: req.query.status,
+    })
+    .paginate({
+      page: parseInt(req.query.page as string, 10) || 1,
+      limit: parseInt(req.query.limit as string, 10) || 10,
+    })
     .sort('-createdAt')
     .exec();
 
