@@ -63,7 +63,7 @@ const getUsersHandler = catchAsync(async (req, res) => {
   );
 
   const { meta, data } = await qb(UserprofileModel)
-    .select('-createdAt -updatedAt -__v')
+    .select('-createdAt -updatedAt -__v ')
     .populate({
       path: 'userId',
       select: selectedFields,
