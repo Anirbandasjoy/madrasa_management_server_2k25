@@ -3,6 +3,11 @@ import { z } from 'zod';
 const createContact = z.object({
   body: z.object({
     name: z.string({ required_error: 'Contact name is required' }),
+    phone: z.string().optional(),
+    email: z.string({ required_error: 'Contact email is required' }).email(),
+    message: z.string({ required_error: 'Contact message is required' }),
+    isRead: z.boolean().optional(),
+    isImportant: z.boolean().optional(),
   }),
 });
 
