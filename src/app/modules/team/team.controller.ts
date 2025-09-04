@@ -24,7 +24,7 @@ export const getTeamHandler = catchAsync(async (req, res) => {
 
   const { meta, data } = await qb(TeamModel)
     .select(selectedFields)
-    .search(req.query.search)
+    .search(req.query.search,['name','designation','description',"status"])
     .filter({
       status: req.query.status,
     })
