@@ -35,7 +35,6 @@ export const getTeamHandler = catchAsync(async (req, res) => {
     .sort('-createdAt')
     .exec();
 
-  console.log(meta, data);
   sendSuccessResponse(res, {
     statusCode: StatusCodes.OK,
     message: 'Team request processed',
@@ -50,7 +49,6 @@ export const getTeamByIdHandler = catchAsync(async (req, res) => {
     req.query.ignoreFields as string | undefined
   );
 
-  console.log(selectedField);
 
   const team = await teamService.getTeam(req.params.id, selectedField);
 

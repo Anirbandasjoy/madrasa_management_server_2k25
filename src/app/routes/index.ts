@@ -7,6 +7,8 @@ import admissionRouter from '../modules/admission/admission.route';
 import noticeRouter from '../modules/notice/notice.route';
 import contactRouter from '../modules/contact/contact.route';
 import reviewRouter from '../modules/review/review.route';
+import onlineapplicationsRouter from '../modules/onlineapplications/onlineapplications.route';
+
 
 const router = Router();
 
@@ -31,6 +33,7 @@ const routes = [
     path: '/team',
     router: teamRouter,
   },
+
   {
     path: '/notice',
     router: noticeRouter,
@@ -42,6 +45,10 @@ const routes = [
   {
     path: '/review',
     router: reviewRouter,
+  },
+  {
+    path: '/onlineapplications',
+    router: onlineapplicationsRouter,
   },
 ];
 
