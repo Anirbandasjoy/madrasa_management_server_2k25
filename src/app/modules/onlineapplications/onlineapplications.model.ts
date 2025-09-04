@@ -14,7 +14,6 @@ const onlineapplicationsSchema = new Schema<IOnlineapplicationsDoc>(
     motherNameEnglish: { type: String, required: true },
     fatherAnnualIncome: { type: String, required: true },
     dateOfBirth: { type: String, required: true },
-    birthPlace: { type: String, required: true },
     nationality: { type: String, required: true },
     religion: { type: String, required: true },
     gender: { type: String, required: true },

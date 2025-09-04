@@ -11,7 +11,6 @@ const createOnlineapplications = z.object({
     motherNameEnglish: z.string({ required_error: 'Mother name (English) is required' }),
     fatherAnnualIncome: z.string({ required_error: 'Father annual income is required' }),
     dateOfBirth: z.string({ required_error: 'Date of birth is required' }),
-    birthPlace: z.string({ required_error: 'Birth place is required' }),
     nationality: z.string({ required_error: 'Nationality is required' }),
     religion: z.string({ required_error: 'Religion is required' }),
     gender: z.string({ required_error: 'Gender is required' }),
