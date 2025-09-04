@@ -6,6 +6,7 @@ import eventsRouter from '../modules/events/events.router';
 import admissionRouter from '../modules/admission/admission.route';
 import noticeRouter from '../modules/notice/notice.route';
 import contactRouter from '../modules/contact/contact.route';
+import onlineapplicationsRouter from '../modules/onlineapplications/onlineapplications.route';
 
 const router = Router();
 
@@ -38,6 +39,10 @@ const routes = [
   {
     path: '/contact',
     router: contactRouter,
+  },
+  {
+    path: '/onlineapplications',
+    router: onlineapplicationsRouter,
   },
 ];
 
